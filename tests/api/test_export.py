@@ -3,7 +3,7 @@ import unittest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from library.api.export import export_endpoint
+from knyhar.api.export import export_endpoint
 
 endpoint_prefix = "/export"
 

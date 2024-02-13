@@ -3,7 +3,9 @@ import unittest
 from fastapi import FastAPI, param_functions
 from fastapi.testclient import TestClient
 
-from library.api.users import users_endpoint
+from knyhar.api.users import users_endpoint
+
+endpoint_prefix = "/users/me"
 
 
 class TestApiBooks(unittest.TestCase):
@@ -13,23 +15,22 @@ class TestApiBooks(unittest.TestCase):
         self.test_client = TestClient(self.app)
 
     def test_get_user_info(self):
-        response = self.test_client.get("/users/me")
+        response = self.test_client.get(endpoint_prefix)
 
         self.skipTest("Not implemented!")
 
     def test_get_favorite_books(self):
-        response = self.test_client.get("/users/me/favorites")
+        response = self.test_client.get(endpoint_prefix + "/favorites")
 
         self.skipTest("Not implemented!")
 
     def test_add_favorite_books(self):
         response = self.test_client.post(
-            "/users/me/favorites", json={"book_id": 1})
+            endpoint_prefix + "/favorites", json={"book_id": 1})
 
         self.skipTest("Not implemented!")
 
     def test_delete_favorite_book(self):
-        response = self.test_client.delete(
-            "/users/me/favorites")
+        response = self.test_client.delete(endpoint_prefix + "/favorites")
 
         self.skipTest("Not implemented!")

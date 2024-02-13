@@ -5,7 +5,7 @@ import unittest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from library.api.auth import auth_endpoint
+from knyhar.api.auth import auth_endpoint
 
 endpoint_prefix = "/auth"
 

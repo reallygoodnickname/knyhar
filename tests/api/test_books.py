@@ -3,7 +3,7 @@ import unittest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from library.api.books import books_endpoint
+from knyhar.api.books import books_endpoint
 
 endpoint_prefix = "/books"
 
