@@ -5,12 +5,12 @@ VENV:=venv
 
 # Build virtual environment
 venv:
-	${VENV-BIN} ${VENV}/ && . ${VENV}/bin/activate && \
-		pip3 install -r requirements.txt
+	@${VENV-BIN} -q ${VENV}/ && . ${VENV}/bin/activate && \
+		pip3 install -q -r requirements.txt
 
 # Run application tests
-test: venv
-	echo "Not implemented yet!"
+tests: venv
+	@python -m unittest discover -s tests
 
 # Remove virtual environment
 clean:
