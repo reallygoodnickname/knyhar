@@ -10,7 +10,8 @@ venv:
 
 # Run application tests
 tests: venv
-	@python -m unittest discover -s tests
+	@. ${VENV}/bin/activate && \
+	python -m unittest discover -s tests
 
 # Remove virtual environment
 clean:
