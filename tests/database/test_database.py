@@ -1,6 +1,6 @@
 import unittest
 
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, over, text
 from sqlalchemy.exc import OperationalError
 
 from knyhar.database.database import Database
@@ -12,9 +12,9 @@ from knyhar.models.users import User
 
 class DatabaseTest(Database):
     def __init__(self):
-        self.__connect_to_database()
+        super().__init__("localhost", "username", "password")
 
-    def __connect_to_database(self):
+    def _connect_to_database(self):
         """ Create in-memory table for tests """
         URI = "sqlite:///:memory:"
 
