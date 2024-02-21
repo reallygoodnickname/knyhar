@@ -37,7 +37,7 @@ class Database():
         self.tags = TagsDatabase(self)
 
     def _connect_to_database(self):
-        scheme = self.dbms_name + self.dbapi
+        scheme = self.dbms_name + "+" + self.dbapi
         credentials = f"{self.username}:{self.password}"
 
         URI = f"{scheme}://{credentials}@{self.host}/{self.db_name}"
