@@ -1,14 +1,12 @@
 import unittest
 
 from database.test_database import DatabaseTest
-
-from knyhar.database.books import BooksDatabase
 from knyhar.models.books import Book
 
 
 class TestDatabaseBooks(unittest.TestCase):
     def setUp(self):
-        self.books = BooksDatabase(DatabaseTest())
+        self.books = DatabaseTest().books
 
         # Populate database with test data
         for i in range(1, 5):
