@@ -30,13 +30,13 @@ class Database():
         self.dbms_name = dbms_name
         self.dbapi = dbapi
 
-        self.__connect_to_database()
+        self._connect_to_database()
 
         self.users = UsersDatabase(self)
         self.books = BooksDatabase(self)
         self.tags = TagsDatabase(self)
 
-    def __connect_to_database(self):
+    def _connect_to_database(self):
         scheme = self.dbms_name + self.dbapi
         credentials = f"{self.username}:{self.password}"
 
