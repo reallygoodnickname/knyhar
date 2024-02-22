@@ -17,3 +17,6 @@ class Tag(Base):
     books: Mapped[List[knyhar.models.books.Book]] = relationship(
         secondary=books_tags_assoc_table, back_populates="tags"
     )
+
+    def __repr__(self):
+        return f'Tag(id={self.id}, name={self.name}, books={self.books})'

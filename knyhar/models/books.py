@@ -34,3 +34,7 @@ class Book(Base):
     )
     price: Mapped[float] = mapped_column(Float, unique=False,
                                          nullable=False)
+
+    def __repr__(self):
+        return f'Book(id={self.id}, name={self.name}, description={self.description},' + \
+            'author={self.author}, tags={self.tags}, fans={self.fans}, price={self.price})'

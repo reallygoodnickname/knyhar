@@ -22,3 +22,6 @@ class User(Base):
     favorites: Mapped[List[knyhar.models.books.Book]] = relationship(
         secondary=users_books_assoc_table, back_populates="fans"
     )
+
+    def __repr__(self):
+        return f'User(id={self.id}, username={self.username}, password={self.password}, admin={self.admin}, favorties={self.favorites})'
