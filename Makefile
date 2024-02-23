@@ -11,7 +11,9 @@ venv:
 # Run application tests
 tests: venv
 	@. ${VENV}/bin/activate && \
-	python -m unittest discover -s tests
+	coverage run -m unittest discover -s tests && \
+	coverage report -m --skip-covered && \
+	coverage html
 
 # Remove virtual environment
 clean:
