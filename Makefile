@@ -12,7 +12,7 @@ venv:
 tests: venv
 	@. ${VENV}/bin/activate && \
 	coverage run -m unittest discover -s tests && \
-	coverage report -m --skip-covered && \
+	coverage report -m --skip-covered --omit="tests/*,knyhar/models/*" && \
 	coverage html
 
 # Remove virtual environment
