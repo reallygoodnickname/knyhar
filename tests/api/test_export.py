@@ -43,7 +43,5 @@ class TestApiAuth(unittest.TestCase):
     def test_export_books(self):
         response = self.test_client.get(endpoint_prefix+"/")
 
-        print(response.text)
-
         self.assertEqual(response.text.replace('\r', ""), expected_result)
         self.assertEqual(response.status_code, 200)
