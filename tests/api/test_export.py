@@ -30,7 +30,7 @@ expected_result = """id,name,description,author,price,tags,fans
 """
 
 
-class TestApiAuth(unittest.TestCase):
+class TestApiExport(unittest.TestCase):
     def setUp(self):
         database = DatabaseTest()
         database.books.get_all = MagicMock(return_value=mock_books_db)
