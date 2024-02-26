@@ -1,12 +1,13 @@
 import unittest
 
-from database.test_database import DatabaseTest
 from knyhar.models.tags import Tag
+
+from tests.mocks.database import database
 
 
 class TestDatabaseTags(unittest.TestCase):
     def setUp(self):
-        self.tags = DatabaseTest().tags
+        self.tags = database.MockDatabase().tags
 
     def test_add_not_exists(self):
         """ Add tag that doesn't exist """

@@ -1,12 +1,13 @@
 import unittest
 
-from database.test_database import DatabaseTest
 from knyhar.models.users import User
+
+from tests.mocks.database import database
 
 
 class TestDatabaseUsers(unittest.TestCase):
     def setUp(self):
-        self.users = DatabaseTest().users
+        self.users = database.MockDatabase().users
 
         # Populate database with test data
         for i in range(1, 5):
