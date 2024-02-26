@@ -3,12 +3,15 @@ from unittest.mock import MagicMock
 
 from fastapi.testclient import TestClient
 
-from knyhar.api.export import export_endpoint
-from knyhar.knyhar import create_app
+from knyhar.api import export
 
 from knyhar.models.books import Book
 from knyhar.models.tags import Tag
-from tests.database.test_database import DatabaseTest
+
+from knyhar.knyhar import create_app
+from knyhar.settings import Settings
+
+from tests.mocks.database import database
 
 endpoint_prefix = "/export"
 
@@ -32,15 +35,13 @@ expected_result = """id,name,description,author,price,tags,fans
 
 class TestApiExport(unittest.TestCase):
     def setUp(self):
-        database = DatabaseTest()
-        database.books.get_all = MagicMock(return_value=mock_books_db)
-
-        self.app = create_app(database, "supertest")
-        self.app.include_router(export_endpoint)
+        self.database = database.MockDatabase()
+        self.app = create_app([export.endpoint], Settings(), self.database)
 
         self.test_client = TestClient(self.app)
 
     def test_export_books(self):
+        self.database.books.get_all = MagicMock(return_value=mock_books_db)
         response = self.test_client.get(endpoint_prefix+"/")
 
         self.assertEqual(response.text.replace('\r', ""), expected_result)
