@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import List
+from pydantic import BaseModel
 from sqlalchemy import (Float,
                         String,
                         Integer,
@@ -14,6 +15,14 @@ from knyhar.models import (Base,
                            books_tags_assoc_table)
 from knyhar.models.tags import Tag
 import knyhar.models.users
+
+
+class BookModel(BaseModel):
+    name: str
+    description: str
+    author: str
+    tags: list[str]
+    price: float
 
 
 class Book(Base):
@@ -34,6 +43,22 @@ class Book(Base):
     )
     price: Mapped[float] = mapped_column(Float, unique=False,
                                          nullable=False)
+
+    def get_pydantic_model(self) -> BookModel:
+        """
+        Convert current book into a pydantic book model
+
+        Arguments:
+            None: this function doesn't take any arguments
+        Returns:
+            BookModel: Returns created book model suitable for
+                       returning from endpoints
+        """
+
+        return BookModel(name=self.name, description=self.description,
+                         author=self.author, tags=[
+                             tag.name for tag in self.tags],
+                         price=self.price)
 
     def __repr__(self):
         return f'Book(id={self.id}, name={self.name}, description={self.description},' + \
