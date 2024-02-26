@@ -1,11 +1,9 @@
-import logging
 import uvicorn
 
 from fastapi import APIRouter, FastAPI
-from sqlalchemy.exc import OperationalError
 
 from knyhar.database.database import Database
-
+from knyhar.settings import Settings
 from knyhar.api import (auth,
                         register,
                         export,
@@ -13,7 +11,6 @@ from knyhar.api import (auth,
                         users,
                         tags)
 
-from knyhar.settings import Settings
 
 # Application routes
 routes = [
