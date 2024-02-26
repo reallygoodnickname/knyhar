@@ -2,17 +2,16 @@
 from io import StringIO
 from csv import writer
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
-from fastapi.requests import Request
 
 from knyhar.models.books import Book
 
-export_endpoint = APIRouter(prefix="/export", tags=["export"])
+endpoint = APIRouter(prefix="/export", tags=["export"])
 
 
 # Exports all books in CSV format (admin only)
-@export_endpoint.get("/")
+@endpoint.get("/")
 def export_books(request: Request):
     # Get all books from database
     db = request.app.extra["database"]

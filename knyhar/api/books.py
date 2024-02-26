@@ -1,15 +1,17 @@
 # Books endpoint
+from knyhar.models.books import (Book,
+                                 BookModel)
 
-from knyhar.models.books import Book, BookModel
-from fastapi import APIRouter, Response
-from fastapi.requests import Request
+from fastapi import (APIRouter,
+                     Response,
+                     Request)
+
 from pydantic import BaseModel
 
-books_endpoint = APIRouter(prefix="/books",
-                           tags=["books"])
+endpoint = APIRouter(prefix="/books", tags=["books"])
 
 
-@books_endpoint.get("/")
+@endpoint.get("/")
 def get_all_books(request: Request, response: Response):
     # Return all books in JSON format
     books = request.app.extra["database"].books
@@ -25,7 +27,7 @@ def get_all_books(request: Request, response: Response):
     return res
 
 
-@books_endpoint.get("/{id}")
+@endpoint.get("/{id}")
 def get_book(request: Request, response: Response, id: int):
     # Get info about one specific book
     books = request.app.extra["database"].books
@@ -39,7 +41,7 @@ def get_book(request: Request, response: Response, id: int):
     return book.get_pydantic_model()
 
 
-@books_endpoint.post("/")
+@endpoint.post("/")
 def add_book(request: Request, book: BookModel, response: Response):
     books = request.app.extra["database"].books
 
@@ -56,7 +58,7 @@ def add_book(request: Request, book: BookModel, response: Response):
                 "msg": "Added successfully!"}
 
 
-@books_endpoint.delete("/{id}")
+@endpoint.delete("/{id}")
 def delete_book(request: Request, id: int, response: Response):
     books = request.app.extra["database"].books
 
