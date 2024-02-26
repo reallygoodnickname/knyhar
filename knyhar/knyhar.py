@@ -13,8 +13,6 @@ from knyhar.api import (auth,
                         users,
                         tags)
 
-from os import environ
-
 from knyhar.settings import Settings
 
 # Application routes
