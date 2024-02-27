@@ -18,6 +18,7 @@ import knyhar.models.users
 
 
 class BookModel(BaseModel):
+    id: int | None = None
     name: str
     description: str
     author: str
@@ -55,7 +56,7 @@ class Book(Base):
                        returning from endpoints
         """
 
-        return BookModel(name=self.name, description=self.description,
+        return BookModel(id=self.id, name=self.name, description=self.description,
                          author=self.author, tags=[
                              tag.name for tag in self.tags],
                          price=self.price)
