@@ -4,8 +4,7 @@ from typing import List
 from pydantic import BaseModel
 from sqlalchemy import (Float,
                         String,
-                        Integer,
-                        ARRAY)
+                        Integer)
 from sqlalchemy.orm import (Mapped,
                             mapped_column,
                             relationship)
@@ -63,4 +62,4 @@ class Book(Base):
 
     def __repr__(self):
         return f'Book(id={self.id}, name={self.name}, description={self.description},' + \
-            f'author={self.author}, tags={self.tags}, fans={self.fans}, price={self.price})'
+        f'author={self.author}, tags={self.tags}, fans={self.fans}, price={self.price})'
