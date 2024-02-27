@@ -48,6 +48,8 @@ class Settings(BaseSettings):
         port:        Port to listen on
         max_pass:    Max. password length
         min_pass:    Min. password length
+        expire:      Expire time (in seconds)
+        algorithm:   Algorithm for JWT tokens
 
         db_host:     Database host (in format address:port)
         db_dbname:   Database name
@@ -66,6 +68,8 @@ class Settings(BaseSettings):
     port: int = 8080
     max_pass: int = 64
     min_pass: int = 8
+    expire: int = 86400
+    algorithm: str = "HS256"
 
     # Database credentials
     db_host: str = "localhost:5432"
