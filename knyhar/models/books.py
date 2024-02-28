@@ -21,7 +21,7 @@ class BookModel(BaseModel):
     name: str
     description: str
     author: str
-    tags: list[TagModel]
+    tags: list[str]
     price: float
 
 
@@ -57,8 +57,7 @@ class Book(Base):
         session.add(self)
         return BookModel(id=self.id, name=self.name, description=self.description,
                          author=self.author, tags=[
-                             tag.get_pydantic_model() for tag in self.tags],
-                         price=self.price)
+                             tag.name for tag in self.tags], price=self.price)
 
     def __repr__(self):
         return f'Book(id={self.id}, name={self.name}, description={self.description},' + \
