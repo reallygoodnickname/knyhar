@@ -1,17 +1,9 @@
-import unittest
 from unittest.mock import MagicMock
 
-from fastapi.testclient import TestClient
-
-from knyhar.api import books
-from knyhar.knyhar import create_app
 from knyhar.models.books import Book
 from knyhar.models.tags import Tag
 
-from knyhar.settings import Settings
 from tests.api import ApiTests
-
-from tests.mocks.database.database import MockDatabase
 
 endpoint_prefix = "/books"
 
@@ -29,7 +21,7 @@ test_book = {
     "name": "test book",
     "description": "Test book",
     "author": "test",
-    "tags": [{"name": "Horror"}],
+    "tags": [],
     "price": 10.0
 }
 
@@ -74,6 +66,29 @@ class TestApiBooks(ApiTests):
         response = self.test_client.post(endpoint_prefix + "/", json=test_book)
 
         self.assertEqual(response.status_code, 200)
+
+    def test_add_book_tag_exists(self):
+        """ Add book with tag that exists in database """
+        book = test_book.copy()
+        book["tags"] = ["Horror"]
+
+        self.database.books.add = MagicMock(return_value=True)
+        self.database.tags.get = MagicMock(return_value=Tag(name="Horror"))
+
+        response = self.test_client.post(endpoint_prefix + "/", json=book)
+        self.assertEqual(response.status_code, 200)
+
+    def test_add_book_tag_doesnt_exist(self):
+        """ Add book with tag that exists in database """
+        book = test_book.copy()
+        book["tags"] = ["Horror"]
+
+        self.database.books.add = MagicMock(return_value=True)
+        self.database.tags.get = MagicMock(return_value=None)
+
+        response = self.test_client.post(endpoint_prefix + "/", json=book)
+        print(response.text)
+        self.assertEqual(response.status_code, 400)
 
     def test_delete_book_exists(self):
         """ Delete book that exists """
