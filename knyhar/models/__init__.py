@@ -18,6 +18,6 @@ users_books_assoc_table = Table(
 books_tags_assoc_table = Table(
     "books_tags_association_table",
     Base.metadata,
-    Column("left_id", ForeignKey("books.id")),
-    Column("right_id", ForeignKey("tags.name")),
+    Column("left_id", ForeignKey("books.id"), primary_key=True),
+    Column("right_id", ForeignKey("tags.name"), primary_key=True)
 )
