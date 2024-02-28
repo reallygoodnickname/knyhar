@@ -10,6 +10,7 @@ from knyhar.models.tags import Tag
 
 from knyhar.knyhar import create_app
 from knyhar.settings import Settings
+from tests.api import ApiTests
 
 from tests.mocks.database import database
 
@@ -33,13 +34,7 @@ expected_result = """id,name,description,author,price,tags,fans
 """
 
 
-class TestApiExport(unittest.TestCase):
-    def setUp(self):
-        self.database = database.MockDatabase()
-        self.app = create_app([export.endpoint], Settings(), self.database)
-
-        self.test_client = TestClient(self.app)
-
+class TestAPIExport(ApiTests):
     def test_export_books(self):
         self.database.books.get_all = MagicMock(return_value=mock_books_db)
         response = self.test_client.get(endpoint_prefix+"/")

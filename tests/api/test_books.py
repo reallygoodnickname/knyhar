@@ -9,6 +9,7 @@ from knyhar.models.books import Book
 from knyhar.models.tags import Tag
 
 from knyhar.settings import Settings
+from tests.api import ApiTests
 
 from tests.mocks.database.database import MockDatabase
 
@@ -28,18 +29,12 @@ test_book = {
     "name": "test book",
     "description": "Test book",
     "author": "test",
-    "tags": ["Horror"],
+    "tags": [{"name": "Horror"}],
     "price": 10.0
 }
 
 
-class TestApiBooks(unittest.TestCase):
-    def setUp(self):
-        self.database = MockDatabase()
-        self.app = create_app([books.endpoint], Settings(), self.database)
-
-        self.test_client = TestClient(self.app)
-
+class TestApiBooks(ApiTests):
     def test_get_book_exist(self):
         """ Get book by ID that exists """
         self.database.books.get = MagicMock(return_value=mock_book_obj)
