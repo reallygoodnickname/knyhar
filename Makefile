@@ -11,7 +11,7 @@ venv:
 # Run application tests
 tests: venv
 	@. ${VENV}/bin/activate && \
-	coverage run -m unittest discover -s tests && \
+	coverage run -m unittest discover -s tests -p "test_*" && \
 	coverage report -m --skip-covered --omit="tests/*,knyhar/models/*" && \
 	coverage html
 
