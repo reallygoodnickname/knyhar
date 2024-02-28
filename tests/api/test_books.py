@@ -1,27 +1,27 @@
 import unittest
 from unittest.mock import MagicMock
 
-from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from knyhar.api.books import books_endpoint
+from knyhar.api import books
 from knyhar.knyhar import create_app
 from knyhar.models.books import Book
 from knyhar.models.tags import Tag
 
-from tests.database.test_database import DatabaseTest
+from knyhar.settings import Settings
+
 from tests.mocks.database.database import MockDatabase
 
 endpoint_prefix = "/books"
 
 mock_book_obj = Book(id=1, name="Test1", description="test", author="Test",
-                     tags=[Tag(id=2, name="Sci-Fi")], price=1.00)
+                     tags=[Tag(name="Sci-Fi")], price=1.00)
 
 mock_books = [
     Book(id=1, name="Test1", description="test", author="Test",
-         tags=[Tag(id=2, name="Sci-Fi")], price=1.00),
+         tags=[Tag(name="Sci-Fi")], price=1.00),
     Book(id=2, name="Test2", description="test", author="Test",
-         tags=[Tag(id=1, name="Horror")], price=1.00)
+         tags=[Tag(name="Horror")], price=1.00)
 ]
 
 test_book = {
@@ -36,9 +36,7 @@ test_book = {
 class TestApiBooks(unittest.TestCase):
     def setUp(self):
         self.database = MockDatabase()
-
-        self.app = create_app(self.database, "supertest")
-        self.app.include_router(books_endpoint)
+        self.app = create_app([books.endpoint], Settings(), self.database)
 
         self.test_client = TestClient(self.app)
 

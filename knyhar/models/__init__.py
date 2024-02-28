@@ -19,5 +19,5 @@ books_tags_assoc_table = Table(
     "books_tags_association_table",
     Base.metadata,
     Column("left_id", ForeignKey("books.id")),
-    Column("right_id", ForeignKey("tags.id")),
+    Column("right_id", ForeignKey("tags.name")),
 )

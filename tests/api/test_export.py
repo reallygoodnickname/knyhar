@@ -17,11 +17,11 @@ endpoint_prefix = "/export"
 
 mock_books_db = [
     Book(id=1, name="Test1", description="test", author="Test",
-         tags=[Tag(id=2, name="Sci-Fi")], price=1.00, ),
+         tags=[Tag(name="Sci-Fi")], price=1.00, ),
     Book(id=2, name="Test2", description="test", author="Test",
-         tags=[Tag(id=3, name="Fiction")], price=2.00),
+         tags=[Tag(name="Fiction")], price=2.00),
     Book(id=3, name="Test3", description="test", author="Test",
-         tags=[Tag(id=1, name="Horror")], price=3.00)
+         tags=[Tag(name="Horror")], price=3.00)
 ]
 
 
