@@ -1,8 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-from sqlalchemy import select
-
 
 class SubclassTemplate():
     def __init__(self, database_obj, model):
@@ -12,17 +10,17 @@ class SubclassTemplate():
 
     def get_all(self):
         """
-        Get all books 
+        Get all entities
 
         Arguments:
             None: This function doesn't take any arguments
         Returns:
-            entity: List containing all entities 
+            entity: List containing all entities
         """
         with Session(self.engine) as session:
-            books = session.execute(select(self.model)).all()
+            entities = session.query(self.model).all()
 
-            return books
+            return entities
 
     def get(self, id: int):
         """
@@ -45,8 +43,8 @@ class SubclassTemplate():
         Arguments:
             entity: Entity object to add
         Returns:
-            bool: True  - added successfully 
-                  False - entity already exists 
+            bool: True  - added successfully
+                  False - entity already exists
         """
         with Session(self.engine) as session:
             try:
@@ -64,7 +62,7 @@ class SubclassTemplate():
         Arguments:
             id: Entity ID
         Returns:
-            bool: True  - removed successfully 
+            bool: True  - removed successfully
                   False - entity doesn't exist
         """
         with Session(self.engine) as session:
@@ -77,3 +75,16 @@ class SubclassTemplate():
             session.commit()
 
             return True
+
+    def add_relationship(self, target_obj, src_obj, relationship: str) -> bool:
+        """
+        Add relationship entity to a list
+        """
+        with Session(self.engine) as session:
+            if None not in [target_obj, src_obj]:
+                getattr(target_obj, relationship).append(src_obj)
+                session.commit()
+
+            return False
+
+        return False
