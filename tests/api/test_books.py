@@ -87,7 +87,6 @@ class TestApiBooks(ApiTests):
         self.database.tags.get = MagicMock(return_value=None)
 
         response = self.test_client.post(endpoint_prefix + "/", json=book)
-        print(response.text)
         self.assertEqual(response.status_code, 400)
 
     def test_delete_book_exists(self):
