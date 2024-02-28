@@ -5,14 +5,14 @@ from pydantic import BaseModel
 from sqlalchemy import (Float,
                         String,
                         Integer)
-from sqlalchemy.orm import (Mapped,
+from sqlalchemy.orm import (Mapped, Session,
                             mapped_column,
                             relationship)
 
 from knyhar.models import (Base,
                            users_books_assoc_table,
                            books_tags_assoc_table)
-from knyhar.models.tags import Tag
+from knyhar.models.tags import Tag, TagModel
 import knyhar.models.users
 
 
@@ -21,7 +21,7 @@ class BookModel(BaseModel):
     name: str
     description: str
     author: str
-    tags: list[str]
+    tags: list[TagModel]
     price: float
 
 
@@ -44,7 +44,7 @@ class Book(Base):
     price: Mapped[float] = mapped_column(Float, unique=False,
                                          nullable=False)
 
-    def get_pydantic_model(self) -> BookModel:
+    def get_pydantic_model(self, session: Session) -> BookModel:
         """
         Convert current book into a pydantic book model
 
@@ -54,12 +54,12 @@ class Book(Base):
             BookModel: Returns created book model suitable for
                        returning from endpoints
         """
-
+        session.add(self)
         return BookModel(id=self.id, name=self.name, description=self.description,
                          author=self.author, tags=[
-                             tag.name for tag in self.tags],
+                             tag.get_pydantic_model() for tag in self.tags],
                          price=self.price)
 
     def __repr__(self):
         return f'Book(id={self.id}, name={self.name}, description={self.description},' + \
-        f'author={self.author}, tags={self.tags}, fans={self.fans}, price={self.price})'
+            f'author={self.author}, tags={self.tags}, fans={self.fans}, price={self.price})'
