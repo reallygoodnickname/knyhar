@@ -23,3 +23,15 @@ class TestDatabaseUsers(unittest.TestCase):
         user = self.users.get(1)
         if user is not None:
             self.assertTrue(user.admin)
+
+    def test_get_user_by_name_exists(self):
+        """ Get user by name that does exist """
+        res = self.users.get_user_by_username("test1")
+
+        self.assertIsInstance(res, User)
+
+    def test_get_user_by_name_doesnt_exist(self):
+        """ Try to get user that doesn't exist """
+        res = self.users.get_user_by_username("test0")
+
+        self.assertIsNone(res)
