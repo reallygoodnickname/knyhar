@@ -34,6 +34,11 @@ def get_user_from_token(request: Request, token: Annotated[str, Depends(oauth2_s
         # Validate token
         if (user is not None and
                 decoded_token["exp"] > time.time()):
+            if (request.scope["route"].name in
+                    request.app.extra["protected"] and not user.admin):
+                raise HTTPException(
+                    status_code=403, detail="Insufficient permissions!")
+
             return user
 
         raise HTTPException(status_code=401, detail="Invalid token!")

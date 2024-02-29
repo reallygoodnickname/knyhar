@@ -22,9 +22,18 @@ routes = [
     tags.endpoint           # Tags endpoint
 ]
 
+# Pages that should be available to admin only
+protected = [
+    "export_books",         # Export books in CSV
+    "delete_book",          # Delete book
+    "add_book",             # Add new book
+    "add_tag",              # Add new tag
+    "remove_tag",           # Remove tag
+]
+
 
 def create_app(routes: list[APIRouter], settings: Settings,
-               database: Database) -> FastAPI:
+               database: Database, protected: list[str]) -> FastAPI:
     """
     Application factory
 
@@ -37,6 +46,7 @@ def create_app(routes: list[APIRouter], settings: Settings,
 
     app.extra["database"] = database
     app.extra["settings"] = settings
+    app.extra["protected"] = protected
 
     for route in routes:
         app.include_router(route)
@@ -51,7 +61,7 @@ def main():
                         username=settings.db_username,
                         password=settings.db_password)
 
-    app = create_app(routes, settings, database)
+    app = create_app(routes, settings, database, protected)
 
     uvicorn.run(app, port=8080, log_level="warning")
 

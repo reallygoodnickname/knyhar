@@ -1,19 +1,26 @@
 # Tags endpoint
+from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse
-from sqlalchemy import JSON
-from sqlalchemy.orm import Session
-from knyhar.models.books import BookModel
+from fastapi import (APIRouter,
+                     HTTPException,
+                     Request,
+                     Depends)
 
+from sqlalchemy.orm import Session
+
+from knyhar.models.books import BookModel
+from knyhar.models.users import User
 from knyhar.models.tags import Tag, TagModel
+
+from knyhar.api.auth import get_user_from_token
 
 endpoint = APIRouter(prefix="/tags", tags=["tags"])
 
 
 # Add new tag
 @endpoint.post("/")
-def add_tag(request: Request, tag: TagModel) -> JSONResponse:
+def add_tag(request: Request, tag: TagModel, user: Annotated[User, Depends(get_user_from_token)]) -> JSONResponse:
     tags = request.app.extra["database"].tags
     res = tags.add(Tag(name=tag.name))
 
@@ -30,7 +37,7 @@ def add_tag(request: Request, tag: TagModel) -> JSONResponse:
 
 # Delete tag
 @endpoint.delete("/{name}")
-def remove_tag(request: Request, name: str) -> JSONResponse:
+def remove_tag(request: Request, name: str, user: Annotated[User, Depends(get_user_from_token)]) -> JSONResponse:
     tags = request.app.extra["database"].tags
     res = tags.remove(name)
 

@@ -1,13 +1,20 @@
 # Books endpoint
-from fastapi.responses import JSONResponse
+from typing import Annotated
+
+
 from sqlalchemy.orm import Session
-from starlette.types import HTTPExceptionHandler
-from knyhar.models.tags import Tag
+
+from knyhar.models.users import User
 from knyhar.models.books import (Book,
                                  BookModel)
 
-from fastapi import (APIRouter, HTTPException,
+from knyhar.api.auth import get_user_from_token
+
+from fastapi.responses import JSONResponse
+from fastapi import (APIRouter,
+                     HTTPException,
                      Response,
+                     Depends,
                      Request)
 
 endpoint = APIRouter(prefix="/books", tags=["books"])
@@ -45,7 +52,7 @@ def get_book(request: Request, id: int) -> BookModel:
 
 
 @endpoint.post("/")
-def add_book(request: Request, book: BookModel) -> JSONResponse:
+def add_book(request: Request, book: BookModel, user: Annotated[User, Depends(get_user_from_token)]) -> JSONResponse:
     books = request.app.extra["database"].books
     tags = request.app.extra["database"].tags
 
@@ -72,7 +79,7 @@ def add_book(request: Request, book: BookModel) -> JSONResponse:
 
 
 @endpoint.delete("/{id}")
-def delete_book(request: Request, id: int) -> JSONResponse:
+def delete_book(request: Request, id: int, user: Annotated[User, Depends(get_user_from_token)]) -> JSONResponse:
     books = request.app.extra["database"].books
 
     if not books.remove(id):
