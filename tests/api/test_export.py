@@ -27,10 +27,10 @@ mock_books_db = [
 
 
 # Expected result from input
-expected_result = """id,name,description,author,price,tags,fans
-1,Test1,test,Test,1.0,['Sci-Fi'],[]
-2,Test2,test,Test,2.0,['Fiction'],[]
-3,Test3,test,Test,3.0,['Horror'],[]
+expected_result = """id,name,description,author,tags,price
+1,Test1,test,Test,['Sci-Fi'],1.0
+2,Test2,test,Test,['Fiction'],2.0
+3,Test3,test,Test,['Horror'],3.0
 """
 
 
