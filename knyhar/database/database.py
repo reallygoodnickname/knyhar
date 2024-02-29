@@ -1,12 +1,6 @@
-import logging
-
-from sqlalchemy import create_engine, select
-from sqlalchemy.exc import OperationalError, IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy import create_engine
 
 from knyhar.models import Base
-from knyhar.models.books import Book
-from knyhar.models.users import User
 
 from knyhar.database.users import UsersDatabase
 from knyhar.database.books import BooksDatabase
