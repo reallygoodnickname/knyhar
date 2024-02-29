@@ -8,7 +8,7 @@ from knyhar.settings import Settings
 from jose import jwt
 
 from tests.mocks.database.database import MockDatabase
-from knyhar.knyhar import routes, create_app
+from knyhar.knyhar import routes, create_app, protected
 
 
 class ApiTests(unittest.TestCase):
@@ -25,7 +25,7 @@ class ApiTests(unittest.TestCase):
 
         # Setup application
         self.settings.secret_key = "dev"
-        self.app = create_app(routes, self.settings, self.database)
+        self.app = create_app(routes, self.settings, self.database, protected)
 
         # Bearer tokens for different access levels
         self.bearer_token = jwt.encode({"id": 1, "iat": 0, "exp": 9999999999999},
