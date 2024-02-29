@@ -19,7 +19,7 @@ def add_tag(request: Request, tag: TagModel) -> JSONResponse:
 
     if not res:
         raise HTTPException(status_code=400,
-                            detail="Failed to remove tag")
+                            detail="Failed to add tag")
 
     return JSONResponse(status_code=200,
                         content={
@@ -29,7 +29,7 @@ def add_tag(request: Request, tag: TagModel) -> JSONResponse:
 
 
 # Delete tag
-@ endpoint.delete("/{name}")
+@endpoint.delete("/{name}")
 def remove_tag(request: Request, name: str) -> JSONResponse:
     tags = request.app.extra["database"].tags
     res = tags.remove(name)
@@ -45,7 +45,7 @@ def remove_tag(request: Request, name: str) -> JSONResponse:
 
 
 # Get all books with the same tag
-@ endpoint.get("/{name}")
+@endpoint.get("/{name}")
 def get_books_with_tag(request: Request, name: str) -> list[BookModel]:
     tags = request.app.extra["database"].tags
     tag = tags.get(name)
@@ -59,7 +59,7 @@ def get_books_with_tag(request: Request, name: str) -> list[BookModel]:
 
 
 # Get all tags
-@ endpoint.get("/")
+@endpoint.get("/")
 def get_tags(request: Request) -> list[TagModel]:
     tags = request.app.extra["database"].tags
 
