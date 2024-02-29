@@ -12,7 +12,7 @@ endpoint = APIRouter(prefix="/export", tags=["export"])
 
 
 @endpoint.get("/")
-def export_books(request: Request):
+def export_books(request: Request) -> StreamingResponse:
     # Get all books from database
     database = request.app.extra["database"]
     books = database.books.get_all()
