@@ -1,0 +1,111 @@
+@startuml classes
+set namespaceSeparator none
+class "Base" as knyhar.models.Base {
+}
+class "Book" as knyhar.models.books.Book {
+  author : Mapped[str]
+  description : Mapped[str]
+  fans : Mapped[List[knyhar.models.users.User]]
+  id : Mapped[int]
+  name : Mapped[str]
+  price : Mapped[float]
+  tags : Mapped[List['Tag']]
+  get_pydantic_model(session: Session) -> BookModel
+}
+class "BookModel" as knyhar.models.books.BookModel {
+  author : str
+  description : str
+  id : int | None
+  name : str
+  price : float
+  tags : list[str]
+}
+class "BooksDatabase" as knyhar.database.books.BooksDatabase {
+}
+class "Database" as knyhar.database.database.Database {
+  books
+  db_name : str
+  dbapi : str
+  dbms_name : str
+  default_db_name : str
+  default_dbapi : str
+  default_dbms_name : str
+  engine
+  host : str
+  password : str
+  tags
+  username : str
+  users
+}
+class "Settings" as knyhar.settings.Settings {
+  algorithm : str
+  app_name : str
+  db_host : str
+  db_name : str
+  db_password : str
+  db_username : str
+  dbms_dbapi : str
+  dbms_name : str
+  expire : int
+  host : str
+  max_pass : int
+  min_pass : int
+  model_config
+  port : int
+  secret_key : str
+}
+class "SubclassTemplate" as knyhar.database.SubclassTemplate {
+  database_obj
+  engine
+  model
+  add(entity) -> bool
+  add_entity(src_id: int, dest_id: int, src_table: str, relationship: str) -> None
+  get(id: int)
+  get_all()
+  remove(id: int) -> bool
+  remove_entity(dest_id: int, src_id: int, src_table: str, relationship: str) -> None
+}
+class "Tag" as knyhar.models.tags.Tag {
+  books : Mapped[List[knyhar.models.books.Book]]
+  name : Mapped[str]
+  get_pydantic_model() -> TagModel
+}
+class "TagModel" as knyhar.models.tags.TagModel {
+  name : str
+}
+class "TagsDatabase" as knyhar.database.tags.TagsDatabase {
+}
+class "User" as knyhar.models.users.User {
+  admin : Mapped[bool]
+  favorites : Mapped[List[knyhar.models.books.Book]]
+  id : Mapped[int]
+  password : Mapped[str]
+  username : Mapped[str]
+  get_pydantic_model(session) -> UserModel
+}
+class "UserModel" as knyhar.models.users.UserModel {
+  admin : bool
+  favorites : list[knyhar.models.books.BookModel]
+  id : int | None
+  username : str
+}
+class "UsersDatabase" as knyhar.database.users.UsersDatabase {
+  add_favorite(user_id: int, book_id: int) -> None
+  get_user_by_username(username: str) -> User | None
+  remove_favorite(user_id: int, book_id: int) -> None
+  set_role(id: int, role: bool) -> bool
+}
+class "register_creds" as knyhar.api.register.register_creds {
+  password : str
+  username : str
+}
+knyhar.database.books.BooksDatabase --|> knyhar.database.SubclassTemplate
+knyhar.database.tags.TagsDatabase --|> knyhar.database.SubclassTemplate
+knyhar.database.users.UsersDatabase --|> knyhar.database.SubclassTemplate
+knyhar.models.books.Book --|> knyhar.models.Base
+knyhar.models.tags.Tag --|> knyhar.models.Base
+knyhar.models.users.User --|> knyhar.models.Base
+knyhar.database.books.BooksDatabase --* knyhar.database.database.Database : books
+knyhar.database.tags.TagsDatabase --* knyhar.database.database.Database : tags
+knyhar.database.users.UsersDatabase --* knyhar.database.database.Database : users
+@enduml

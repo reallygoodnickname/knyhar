@@ -1,0 +1,35 @@
+@startuml classes
+entity Users as "users" {
+ + id: INT
+  --
+  username: VARCHAR(255)
+  description: VARCHAR(128)
+  admin: BOOLEAN
+}
+entity Tags as "Tags" {
+  + name: VARCHAR(32)
+  --
+  name: VARCHAR(32)
+  books: 
+}
+entity Books as "Books" {
+  + id: INT
+  --
+  name: VARCHAR(64)
+  description: VARCHAR(1024)
+  author: VARCHAR(256)
+  price: DOUBLE PRECISION
+}
+entity BooksTagsAssoc as "books_tags_association_table" {
+  left_id: INT
+  right_id: VARCHAR(32)
+}
+entity BooksUsersAssoc as "users_books_association_table" {
+  left_id: INT
+  right_id: INT
+}
+Users -- BooksUsersAssoc : "1:N"
+Books -- BooksUsersAssoc : "1:N"
+Books -- BooksTagsAssoc : "1:N"
+Tags -- BooksTagsAssoc : "1:N"
+@enduml
