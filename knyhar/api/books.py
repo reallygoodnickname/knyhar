@@ -1,11 +1,12 @@
 # Books endpoint
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+from starlette.types import HTTPExceptionHandler
 from knyhar.models.tags import Tag
 from knyhar.models.books import (Book,
                                  BookModel)
 
-from fastapi import (APIRouter,
+from fastapi import (APIRouter, HTTPException,
                      Response,
                      Request)
 
@@ -13,7 +14,7 @@ endpoint = APIRouter(prefix="/books", tags=["books"])
 
 
 @endpoint.get("/")
-def get_all_books(request: Request, response: Response):
+def get_all_books(request: Request, response: Response) -> list[BookModel]:
     # Return all books in JSON format
     books = request.app.extra["database"].books
 
@@ -30,22 +31,21 @@ def get_all_books(request: Request, response: Response):
 
 
 @endpoint.get("/{id}")
-def get_book(request: Request, response: Response, id: int):
+def get_book(request: Request, id: int) -> BookModel:
     # Get info about one specific book
     books = request.app.extra["database"].books
 
     book = books.get(id)
     if book is None:
-        response.status_code = 400
-        return {"code": 400,
-                "msg": "Book with such ID doesn't exist!"}
+        raise HTTPException(status_code=400,
+                            detail="Book with such ID doesn't exist!")
 
     with Session(books.engine) as session:
         return book.get_pydantic_model(session)
 
 
 @endpoint.post("/")
-def add_book(request: Request, book: BookModel, response: Response):
+def add_book(request: Request, book: BookModel) -> JSONResponse:
     books = request.app.extra["database"].books
     tags = request.app.extra["database"].tags
 
@@ -55,31 +55,30 @@ def add_book(request: Request, book: BookModel, response: Response):
     for tag in book.tags:
         res = tags.get(tag)
         if res is None:
-            return JSONResponse(status_code=400,
-                                content={"code": 400,
-                                         "msg": f'Tag "{tag}" is not found!'})
+            raise HTTPException(status_code=400,
+                                detail=f'Tag "{tag}" is not found!')
 
         _book.tags.append(res)
 
     if not books.add(_book):
-        response.status_code = 400
-        return {"code": 400,
-                "msg": "Book already exists!"}
+        raise HTTPException(status_code=400,
+                            detail="Book already exists!")
     else:
-        response.status_code = 200
-        return {"code": 200,
-                "msg": "Added successfully!"}
+        return JSONResponse(status_code=200,
+                            content={
+                                "code": 200,
+                                "msg": "Added successfully!"
+                            })
 
 
 @endpoint.delete("/{id}")
-def delete_book(request: Request, id: int, response: Response):
+def delete_book(request: Request, id: int) -> JSONResponse:
     books = request.app.extra["database"].books
 
     if not books.remove(id):
-        response.status_code = 400
-        return {"code": 400,
-                "msg": "Book doesn't exist!"}
+        raise HTTPException(status_code=400,
+                            detail="Book doesn't exist!")
     else:
-        response.status_code = 200
-        return {"code": 200,
-                "msg": "Book removed successfully!"}
+        return JSONResponse(status_code=200,
+                            content={"code": 200,
+                                     "msg": "Book removed successfully!"})
