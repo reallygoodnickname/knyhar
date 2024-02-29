@@ -1,12 +1,13 @@
 # Books endpoint
+from fastapi.responses import JSONResponse
+from sqlalchemy.orm import Session
+from knyhar.models.tags import Tag
 from knyhar.models.books import (Book,
                                  BookModel)
 
 from fastapi import (APIRouter,
                      Response,
                      Request)
-
-from pydantic import BaseModel
 
 endpoint = APIRouter(prefix="/books", tags=["books"])
 
@@ -22,7 +23,8 @@ def get_all_books(request: Request, response: Response):
     res = []
 
     for book in _books:
-        res.append(book.get_pydantic_model())
+        with Session(books.engine) as session:
+            res.append(book.get_pydantic_model(session))
 
     return res
 
@@ -38,15 +40,26 @@ def get_book(request: Request, response: Response, id: int):
         return {"code": 400,
                 "msg": "Book with such ID doesn't exist!"}
 
-    return book.get_pydantic_model()
+    with Session(books.engine) as session:
+        return book.get_pydantic_model(session)
 
 
 @endpoint.post("/")
 def add_book(request: Request, book: BookModel, response: Response):
     books = request.app.extra["database"].books
+    tags = request.app.extra["database"].tags
 
     _book = Book(name=book.name, description=book.description,
-                 author=book.author, price=book.price)
+                 author=book.author, tags=[], price=book.price)
+
+    for tag in book.tags:
+        res = tags.get(tag)
+        if res is None:
+            return JSONResponse(status_code=400,
+                                content={"code": 400,
+                                         "msg": f'Tag "{tag}" is not found!'})
+
+        _book.tags.append(res)
 
     if not books.add(_book):
         response.status_code = 400
