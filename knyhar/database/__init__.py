@@ -1,5 +1,9 @@
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
+
+from knyhar.database.exc import (EntityNotFound,
+                                 EntityAlreadyAdded,
+                                 EntityMissing)
 
 
 class SubclassTemplate():
@@ -76,15 +80,58 @@ class SubclassTemplate():
 
             return True
 
-    def add_relationship(self, target_obj, src_obj, relationship: str) -> bool:
+    def add_entity(self, src_id: int, dest_id: int,
+                   src_table: str, relationship: str) -> None:
         """
-        Add relationship entity to a list
+        Add entity to a relationship list of another entity
+
+        Arguments:
+            src_id: Object's ID to what entity should be added 
+            src_id: Object's ID that should be added 
+            src_table: Source's table from which added object should be taken
+            relationship: Relationship field string 
+        Returns:
+            None: This function doesn't return anything
         """
         with Session(self.engine) as session:
-            if None not in [target_obj, src_obj]:
-                getattr(target_obj, relationship).append(src_obj)
-                session.commit()
+            dest_entity = self.get(dest_id)
+            src_entity = getattr(self.database_obj, src_table).get(src_id)
+            if None not in [dest_entity, src_entity]:
+                session.add(dest_entity)
 
-            return False
+                try:
+                    getattr(dest_entity, relationship).append(src_entity)
+                    session.commit()
+                except InvalidRequestError:
+                    raise EntityAlreadyAdded
 
-        return False
+            else:
+                raise EntityNotFound(src_id)
+
+    def remove_entity(self, dest_id: int, src_id: int,
+                      src_table: str, relationship: str) -> None:
+        """
+        Remove entity from a relationship list of another entity
+
+        Arguments:
+            dest_id: Object's ID from what entity should be removed
+            src_id: Object's ID that should be removed
+            src_table: Source's table
+            relationship: Relationship field string 
+        Returns:
+            None: This function doesn't return anything
+        """
+        with Session(self.engine) as session:
+            dest_entity = self.get(dest_id)
+            src_entity = getattr(self.database_obj, src_table).get(src_id)
+            if None not in [dest_entity, src_entity]:
+                session.add_all([dest_entity, src_entity])
+
+                try:
+                    getattr(dest_entity, relationship).remove(src_entity)
+                    session.commit()
+                except ValueError:
+                    raise EntityMissing
+
+            else:
+                raise EntityNotFound(src_id)
