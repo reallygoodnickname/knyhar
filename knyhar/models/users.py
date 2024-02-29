@@ -12,6 +12,7 @@ from pydantic import BaseModel
 
 
 class UserModel(BaseModel):
+    id: int | None = None
     username: str
     admin: bool
     favorites: list[knyhar.models.books.BookModel]
@@ -44,7 +45,7 @@ class User(Base):
         favorites = [book.get_pydantic_model(
             session) for book in self.favorites]
 
-        return UserModel(username=self.username, admin=self.admin,
+        return UserModel(id=self.id, username=self.username, admin=self.admin,
                          favorites=favorites)
 
     def __repr__(self):
