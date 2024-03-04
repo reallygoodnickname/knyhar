@@ -66,7 +66,7 @@ class UsersDatabase(SubclassTemplate):
         Returns:
             None: This function doesn't return anything
         """
-        return self.add_entity(user_id, book_id, "books", "favorites")
+        return self.add_entity(book_id, user_id, "books", "favorites")
 
     def remove_favorite(self, user_id: int, book_id: int) -> None:
         """
